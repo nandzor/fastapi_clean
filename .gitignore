@@ -68,3 +68,5 @@ venv.bak/
 .idea/
 .env
 cache/
+
+GEMINI.md

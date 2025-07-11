@@ -1,4 +1,12 @@
-from sqlalchemy import String, ForeignKey, DateTime, Table, Column, UUID, Boolean
+from sqlalchemy import (
+    Table,
+    Column,
+    String,
+    BigInteger,
+    Integer,
+    Text,
+    ForeignKey,
+)
 from sqlalchemy.sql import func
 
 from domain.entities.session import Session
@@ -7,16 +15,15 @@ from infrastructure.database.tables.base import metadata, mapper_registry
 sessions_table = Table(
     "sessions",
     metadata,
-    Column("id", String, primary_key=True),
-    Column("user_id", UUID, ForeignKey("users.id"), nullable=False, unique=True),
-    Column(
-        "created_at",
-        DateTime(timezone=True),
-        server_default=func.now(),
-        nullable=False,
-    ),
-    Column("expires_at", DateTime(timezone=True), nullable=False),
-    Column("is_active", Boolean, default=True, nullable=False),
+    Column("id", String(255), primary_key=True),
+    Column("user_id", BigInteger, ForeignKey("users.id"), nullable=True, index=True),
+    Column("ip_address", String(45), nullable=True),
+    Column("user_agent", Text, nullable=True),
+    Column("payload", Text, nullable=False),
+    
+    # Storing last_activity as an integer (Unix timestamp)
+    # Added an index for performance on session cleanup queries.
+    Column("last_activity", Integer, nullable=False, index=True),
 )
 
 
